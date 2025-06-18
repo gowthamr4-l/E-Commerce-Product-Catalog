@@ -1,0 +1,53 @@
+.about-page {
+    min-height: 100vh;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.about-page h1 {
+    font-size: 40px;
+    color: #2874f0;
+    margin-bottom: 20px;
+}
+
+.about-page h1 span {
+    color: #ff6600;
+}
+
+.about-page .tagline {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.about-page .about-content {
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.about-page .about-content p {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .about-page {
+        padding: 40px 15px;
+    }
+
+    .about-page h1 {
+        font-size: 32px;
+    }
+
+    .about-page .tagline {
+        font-size: 20px;
+    }
+
+    .about-page .about-content {
+        font-size: 16px;
+    }
+}
