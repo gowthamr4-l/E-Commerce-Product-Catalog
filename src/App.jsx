@@ -16,7 +16,7 @@ function App() {
     <CartProvider>
       <Header onToggleFilter={handleToggleFilter} />
       <Routes>
-        <Route path="/" element={<Home showFilter={showFilter} />} />
+        <Route path="/" index exact element={<Home showFilter={showFilter} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
