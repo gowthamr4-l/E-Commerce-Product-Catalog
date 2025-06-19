@@ -1,70 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import '../Styles/Product.css';
 import ProductCard from '../Components/ProductCard/ProductCard';
+import '../Styles/product.css'
 
-function ProductList({ showFilter }) {
+
+function ProductList({ showFilter, searchQuery = '' }) {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedRating, setSelectedRating] = useState('');
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
+  // Fetch products and categories
   useEffect(() => {
-    const controller = new AbortController();
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('https://fakestoreapi.com/products', {
-          signal: controller.signal,
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not OK');
-        }
-        const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data);
-        const uniqueCategories = [...new Set(data.map(item => item.category))];
-        setCategories(uniqueCategories);
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err);
-        }
-      } finally {
+    setLoading(true);
+    Promise.all([
+      fetch('https://fakestoreapi.com/products').then(res => res.json()),
+      fetch('https://fakestoreapi.com/products/categories').then(res => res.json())
+    ])
+      .then(([productsData, categoriesData]) => {
+        setProducts(productsData);
+        setCategories(categoriesData);
         setLoading(false);
-      }
-    };
-
-    fetchProducts();
-    return () => controller.abort();
+      })
+      .catch(err => {
+        setError('Failed to load products.');
+        setLoading(false);
+      });
   }, []);
 
+  // Filter products
   useEffect(() => {
-    let temp = [...products];
+    let filtered = products;
 
     if (selectedCategory) {
-      temp = temp.filter(p => p.category === selectedCategory);
+      filtered = filtered.filter(p => p.category === selectedCategory);
     }
 
     if (selectedRating) {
-      temp = temp.filter(p => p.rating && p.rating.rate >= Number(selectedRating));
+      filtered = filtered.filter(p => Math.floor(p.rating?.rate || 0) >= Number(selectedRating));
     }
 
-    setFilteredProducts(temp);
-  }, [selectedCategory, selectedRating, products]);
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(p =>
+        p.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
+      );
+    }
 
-  if (loading) return <div className="loader">Loading products...</div>;
-  if (error) return <p>Error: {error.message}</p>;
+    setFilteredProducts(filtered);
+  }, [selectedCategory, selectedRating, searchQuery, products]);
+
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="product-page">
       {showFilter && (
         <div className="filter-panel">
           <h3>Filter Products</h3>
-
           <div className="filter-group">
             <label>Category:</label>
             <select
@@ -77,7 +71,6 @@ function ProductList({ showFilter }) {
               ))}
             </select>
           </div>
-
           <div className="filter-group">
             <label>Minimum Rating:</label>
             <select
@@ -90,7 +83,6 @@ function ProductList({ showFilter }) {
               <option value="2">2 stars & up</option>
             </select>
           </div>
-
           <button
             className="clear-btn"
             onClick={() => {

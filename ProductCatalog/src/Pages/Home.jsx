@@ -1,11 +1,12 @@
 import React from 'react';
-import ProductList from './ProductList';
+import ProductList from '../Pages/ProductList';
 
-function Home({ showFilter }) {
+function Home({ searchQuery, showFilter }) {
   return (
-    <div>
-      <ProductList showFilter={showFilter} />
-    </div>
+    <ProductList 
+      showFilter={showFilter}
+      searchQuery={searchQuery}
+    />
   );
 }
 

@@ -20,6 +20,7 @@ function Header({ onToggleFilter }) {
         <h1>Shop<span>Nest</span></h1>
       </div>
 
+
       {/* Hamburger for mobile */}
       <button className="menu-toggle" onClick={toggleMenu}>
         {menuOpen ? <FaTimes /> : <FaBars />}
